@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Хвиля Перемоги - Українське Радіо</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #005BBB;
+            --secondary-color: #FFD500;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            color: white;
+            overflow: hidden;
+            background: #000;
+            min-height: 100vh;
+        }
+
+        #visualization-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+
+        .content-wrapper {
+            position: relative;
+            z-index: 2;
+            background: rgba(0, 0, 0, 0.5);
+            min-height: 100vh;
+            backdrop-filter: blur(5px);
+        }
+
+        header {
+            text-align: center;
+            padding: 2rem 0;
+        }
+
+        .logo {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+            text-shadow: 0 0 10px rgba(0, 91, 187, 0.8);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .player-container {
+            text-align: center;
+            margin: 2rem auto;
+            max-width: 800px;
+        }
+
+        .vinyl-player {
+            width: 200px;
+            height: 200px;
+            margin: 2rem auto;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .vinyl-disc {
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, #333 0%, #000 70%);
+            border-radius: 50%;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 20px rgba(255, 213, 0, 0.5);
+            transition: transform 0.5s ease;
+        }
+
+        .vinyl-disc::before {
+            content: '';
+            position: absolute;
+            width: 30%;
+            height: 30%;
+            background: radial-gradient(circle, var(--secondary-color) 0%, var(--primary-color) 100%);
+            border-radius: 50%;
+        }
+
+        .vinyl-disc.playing {
+            animation: spin 2s linear infinite;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .vinyl-label {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-weight: bold;
+            font-size: 0.8rem;
+            text-align: center;
+            pointer-events: none;
+            z-index: 2;
+            text-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+        }
+
+        .description, .contact-info {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 2rem;
+            border-radius: 15px;
+            margin: 2rem 0;
+            backdrop-filter: blur(10px);
+            transition: transform 0.3s ease;
+        }
+
+        .description:hover, .contact-info:hover {
+            transform: translateY(-5px);
+        }
+
+        .contact-button {
+            display: inline-block;
+            background-color: var(--primary-color);
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border-radius: 25px;
+            text-decoration: none;
+            margin: 0.5rem;
+            transition: all 0.3s;
+            box-shadow: 0 0 10px rgba(0, 91, 187, 0.5);
+        }
+
+        .contact-button:hover {
+            background-color: var(--secondary-color);
+            transform: scale(1.05);
+            color: #000;
+        }
+
+        footer {
+            background: rgba(0, 91, 187, 0.3);
+            text-align: center;
+            padding: 1rem;
+            backdrop-filter: blur(5px);
+            position: relative;
+            z-index: 2;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+            
+            .logo {
+                font-size: 2rem;
+            }
+
+            .vinyl-player {
+                width: 150px;
+                height: 150px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <canvas id="visualization-background"></canvas>
+    <div class="content-wrapper">
+        <header>
+            <div class="logo">Хвиля Перемоги</div>
+            <p>Круглодобово Українська сучасна музика</p>
+        </header>
+
+        <div class="container">
+            <div class="player-container">
+                <h2>Слухати зараз</h2>
+                <div class="vinyl-player" onclick="togglePlay()">
+                    <div class="vinyl-disc" id="vinyl">
+                        <div class="vinyl-label">Хвиля Перемоги</div>
+                    </div>
+                </div>
+                <audio id="radio-player" src="https://stream.zeno.fm/sikg4vgnv2jvv" crossorigin="anonymous"></audio>
+            </div>
+
+            <div class="description">
+                <h2>Про нас</h2>
+                <p>"Хвиля Перемоги" – це радіо, де українська сучасна музика відіграє ключову роль, об'єднуючи жанри та культури. Круглодобово Тільки Українська сучасна музика.</p>
+            </div>
+
+            <div class="contact-info">
+                <h2>Зв'язатися з нами</h2>
+                <a href="mailto:wavevictory@protonmail.com" class="contact-button">
+                    <i class="fas fa-envelope"></i> Написати нам
+                </a>
+                <a href="https://bit.ly/3APXqaS" class="contact-button" target="_blank">
+                    <i class="fas fa-headphones"></i> Підтримка
+                </a>
+            </div>
+        </div>
+
+        <footer>
+            <p>&copy; 2025 Хвиля Перемоги. Всі права захищені.</p>
+        </footer>
+    </div>
+
+    <script>
+        // Створюємо аудіо контекст та аналізатор
+        let audioContext;
+        let analyser;
+        let source;
+        const canvas = document.getElementById('visualization-background');
+        const ctx = canvas.getContext('2d');
+        let animationFrame;
+        let particles = [];
+
+        // Налаштування canvas
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            // Оновлюємо частинки при зміні розміру
+            initParticles();
+        }
+
+        // Клас для частинок
+        class Particle {
+            constructor() {
+                this.reset();
+            }
+
+            reset() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 5 + 2;
+                this.speedX = Math.random() * 3 - 1.5;
+                this.speedY = Math.random() * 3 - 1.5;
+                this.life = 1;
+                this.color = `hsla(${Math.random() * 60 + 210}, 100%, 50%, ${this.life})`;
+            }
+
+            update(frequency) {
+                this.x += this.speedX * (frequency + 0.2);
+                this.y += this.speedY * (frequency + 0.2);
+                this.life -= 0.01;
+                this.color = `hsla(${Math.random() * 60 + 210}, 100%, 50%, ${this.life})`;
+
+                if (this.x < 0 || this.x > canvas.width || 
+                    this.y < 0 || this.y > canvas.height || 
+                    this.life <= 0) {
+                    this.reset();
+                }
+            }
+
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fillStyle = this.color;
+                ctx.fill();
+            }
+        }
+
+        // Ініціалізація частинок
+        function initParticles() {
+            particles = [];
+            const numberOfParticles = Math.floor((canvas.width * canvas.height) / 9000);
+            for (let i = 0; i < numberOfParticles; i++) {
+                particles.push(new Particle());
+            }
+        }
+
+        // Ініціалізація аудіо контексту
+        function initAudio() {
+            const audio = document.getElementById('radio-player');
+            audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            analyser = audioContext.createAnalyser();
+            source = audioContext.createMediaElementSource(audio);
+            
+            source.connect(analyser);
+            analyser.connect(audioContext.destination);
+            
+            analyser.fftSize = 256;
+            return audio;
+        }
+
+        // Функція візуалізації
+        function visualize() {
+            const bufferLength = analyser.frequencyBinCount;
+            const dataArray = new Uint8Array(bufferLength);
+            analyser.getByteFrequencyData(dataArray);
+            
+            // Очищення canvas з ефектом затухання
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // Оновлення та малювання частинок
+            particles.forEach((particle, index) => {
+                const frequencyIndex = Math.floor(index % bufferLength);
+                const frequency = dataArray[frequencyIndex] / 255;
+                particle.update(frequency);
+                particle.draw();
+            });
+            
+            // Малювання центральної хвилі
+            ctx.beginPath();
+            ctx.moveTo(0, canvas.height / 2);
+            
+            for (let i = 0; i < bufferLength; i++) {
+                const x = (canvas.width / bufferLength) * i;
+                const v = dataArray[i] / 128.0;
+                const y = (v * canvas.height / 4) + canvas.height / 2;
+                
+                ctx.lineTo(x, y);
+            }
+            
+            ctx.strokeStyle = 'rgba(255, 213, 0, 0.5)';
+            ctx.stroke();
+            
+            animationFrame = requestAnimationFrame(visualize);
+        }
+
+        // Оновлена функція togglePlay
+        function togglePlay() {
+            const audio = document.getElementById('radio-player');
+            const vinyl = document.getElementById('vinyl');
+            
+            if (!audioContext) {
+                initAudio();
+                initParticles();
+            }
+            
+            if (audio.paused) {
+                audio.play()
+                    .then(() => {
+                        vinyl.classList.add('playing');
+                        visualize();
+                    })
+                    .catch(error => console.error("Помилка відтворення:", error));
+            } else {
+                audio.pause();
+                vinyl.classList.remove('playing');
+                cancelAnimationFrame(animationFrame);
+            }
+        }
+
+        // Ініціалізація при завантаженні
+        window.addEventListener('load', () => {
+            resizeCanvas();
+            initParticles();
+        });
+
+        window.addEventListener('resize', resizeCanvas);
+
+        // Обробка помилок аудіо
+        const audio = document.getElementById('radio-player');
+        audio.onerror = function(error) {
+            console.error("Помилка завантаження аудіо:", error);
+        };
+    </script>
+</body>
+</html>
