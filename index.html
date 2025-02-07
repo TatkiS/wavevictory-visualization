@@ -21,7 +21,7 @@
             font-family: 'Arial', sans-serif;
             line-height: 1.6;
             color: white;
-            overflow: hidden;
+            overflow-x: hidden;
             background: #000;
             min-height: 100vh;
         }
@@ -41,35 +41,39 @@
             background: rgba(0, 0, 0, 0.5);
             min-height: 100vh;
             backdrop-filter: blur(5px);
+            display: flex;
+            flex-direction: column;
         }
 
         header {
             text-align: center;
-            padding: 2rem 0;
+            padding: 1.5rem;
         }
 
         .logo {
-            font-size: 2.5rem;
+            font-size: clamp(2rem, 5vw, 2.5rem);
             font-weight: bold;
             margin-bottom: 1rem;
             text-shadow: 0 0 10px rgba(0, 91, 187, 0.8);
         }
 
         .container {
+            flex: 1;
             max-width: 1200px;
             margin: 0 auto;
-            padding: 2rem;
+            padding: 1rem;
+            width: 100%;
         }
 
         .player-container {
             text-align: center;
-            margin: 2rem auto;
+            margin: 1rem auto;
             max-width: 800px;
         }
 
         .vinyl-player {
-            width: 200px;
-            height: 200px;
+            width: clamp(150px, 40vw, 200px);
+            height: clamp(150px, 40vw, 200px);
             margin: 2rem auto;
             position: relative;
             cursor: pointer;
@@ -106,25 +110,11 @@
             to { transform: rotate(360deg); }
         }
 
-        .vinyl-label {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            color: white;
-            font-weight: bold;
-            font-size: 0.8rem;
-            text-align: center;
-            pointer-events: none;
-            z-index: 2;
-            text-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
-        }
-
         .description, .contact-info {
             background: rgba(255, 255, 255, 0.1);
-            padding: 2rem;
+            padding: 1.5rem;
             border-radius: 15px;
-            margin: 2rem 0;
+            margin: 1rem 0;
             backdrop-filter: blur(10px);
             transition: transform 0.3s ease;
         }
@@ -143,6 +133,9 @@
             margin: 0.5rem;
             transition: all 0.3s;
             box-shadow: 0 0 10px rgba(0, 91, 187, 0.5);
+            width: calc(100% - 2rem);
+            max-width: 300px;
+            text-align: center;
         }
 
         .contact-button:hover {
@@ -156,22 +149,46 @@
             text-align: center;
             padding: 1rem;
             backdrop-filter: blur(5px);
-            position: relative;
-            z-index: 2;
+            margin-top: auto;
         }
 
         @media (max-width: 768px) {
             .container {
-                padding: 1rem;
+                padding: 0.5rem;
             }
             
+            .description, .contact-info {
+                padding: 1rem;
+            }
+
+            h2 {
+                font-size: 1.5rem;
+            }
+
+            p {
+                font-size: 0.95rem;
+            }
+        }
+
+        @media (max-width: 480px) {
             .logo {
-                font-size: 2rem;
+                font-size: 1.8rem;
             }
 
             .vinyl-player {
                 width: 150px;
                 height: 150px;
+            }
+
+            .contact-button {
+                display: block;
+                margin: 0.5rem auto;
+            }
+        }
+
+        @media (hover: none) {
+            .description:hover, .contact-info:hover {
+                transform: none;
             }
         }
     </style>
@@ -206,7 +223,7 @@
                     <i class="fas fa-envelope"></i> Написати нам
                 </a>
                 <a href="https://bit.ly/3APXqaS" class="contact-button" target="_blank">
-                    <i class="fas "></i> НА КАВУ
+                    <</i> НА КАВУ
                 </a>
             </div>
         </div>
@@ -217,7 +234,6 @@
     </div>
 
     <script>
-        // Створюємо аудіо контекст та аналізатор
         let audioContext;
         let analyser;
         let source;
@@ -226,15 +242,12 @@
         let animationFrame;
         let particles = [];
 
-        // Налаштування canvas
         function resizeCanvas() {
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
-            // Оновлюємо частинки при зміні розміру
             initParticles();
         }
 
-        // Клас для частинок
         class Particle {
             constructor() {
                 this.reset();
@@ -271,16 +284,14 @@
             }
         }
 
-        // Ініціалізація частинок
         function initParticles() {
             particles = [];
-            const numberOfParticles = Math.floor((canvas.width * canvas.height) / 9000);
+            const numberOfParticles = Math.floor((canvas.width * canvas.height) / 12000);
             for (let i = 0; i < numberOfParticles; i++) {
                 particles.push(new Particle());
             }
         }
 
-        // Ініціалізація аудіо контексту
         function initAudio() {
             const audio = document.getElementById('radio-player');
             audioContext = new (window.AudioContext || window.webkitAudioContext)();
@@ -294,17 +305,14 @@
             return audio;
         }
 
-        // Функція візуалізації
         function visualize() {
             const bufferLength = analyser.frequencyBinCount;
             const dataArray = new Uint8Array(bufferLength);
             analyser.getByteFrequencyData(dataArray);
             
-            // Очищення canvas з ефектом затухання
             ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
             
-            // Оновлення та малювання частинок
             particles.forEach((particle, index) => {
                 const frequencyIndex = Math.floor(index % bufferLength);
                 const frequency = dataArray[frequencyIndex] / 255;
@@ -312,7 +320,6 @@
                 particle.draw();
             });
             
-            // Малювання центральної хвилі
             ctx.beginPath();
             ctx.moveTo(0, canvas.height / 2);
             
@@ -320,7 +327,6 @@
                 const x = (canvas.width / bufferLength) * i;
                 const v = dataArray[i] / 128.0;
                 const y = (v * canvas.height / 4) + canvas.height / 2;
-                
                 ctx.lineTo(x, y);
             }
             
@@ -330,7 +336,6 @@
             animationFrame = requestAnimationFrame(visualize);
         }
 
-        // Оновлена функція togglePlay
         function togglePlay() {
             const audio = document.getElementById('radio-player');
             const vinyl = document.getElementById('vinyl');
@@ -354,7 +359,6 @@
             }
         }
 
-        // Ініціалізація при завантаженні
         window.addEventListener('load', () => {
             resizeCanvas();
             initParticles();
@@ -362,7 +366,6 @@
 
         window.addEventListener('resize', resizeCanvas);
 
-        // Обробка помилок аудіо
         const audio = document.getElementById('radio-player');
         audio.onerror = function(error) {
             console.error("Помилка завантаження аудіо:", error);
